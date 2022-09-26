@@ -1,6 +1,6 @@
 namespace XUnitTestReviewerProject;
 
-public class UnitTest1
+public class ReviewServiceTest
 {
     [Fact]
     public void Test1()
