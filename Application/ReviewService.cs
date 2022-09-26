@@ -12,7 +12,7 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfReviewsFromReviewer(int reviewer)
     {
-        throw new NotImplementedException();
+        return _repository.GetNumberOfReviewsFromReviewer(reviewer);
     }
 
     public double GetAverageRateFromReviewer(int reviewer)
