@@ -1,4 +1,5 @@
 ﻿using Application.Interface;
+using Domain;
 
 namespace Application;
 
@@ -12,7 +13,9 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfReviewsFromReviewer(int reviewer)
     {
-        return _repository.GetNumberOfReviewsFromReviewer(reviewer);
+        var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer).Select(r => r.Reviewer);
+
+        return reviews.Count();
     }
 
     public double GetAverageRateFromReviewer(int reviewer)

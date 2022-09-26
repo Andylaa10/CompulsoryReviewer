@@ -39,8 +39,7 @@ public class ReviewServiceTest
         
         Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
         IReviewService service = new ReviewService(mockRepository.Object);
-        mockRepository.Setup(r => r.GetNumberOfReviewsFromReviewer(reviewer)).Returns(fakeRepo.Length);
-
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         // Act
         var actual = service.GetNumberOfReviewsFromReviewer(reviewer); 
 

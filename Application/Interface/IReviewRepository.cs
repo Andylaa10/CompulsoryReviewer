@@ -1,7 +1,10 @@
-﻿namespace Application.Interface;
+﻿using Domain;
+
+namespace Application.Interface;
 
 public interface IReviewRepository
 {
+    BEReview[] GetAll();
     //1. On input N, what are the number of reviews from reviewer N?
     int GetNumberOfReviewsFromReviewer(int reviewer);
     
