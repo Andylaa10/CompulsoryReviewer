@@ -45,21 +45,88 @@ public class ReviewServiceTest
 
         // Assert
         Assert.Equal(actual, expectedResult);
+        mockRepository.Verify(r => r.GetAll(), Times.Once);
 
     }
 
-    [Fact]
-    public void GetNumberOfInvalidReviewsFromReviewer()
+    [Theory]
+    [InlineData(-1, "Id must be positive")]
+    [InlineData(0, "Id must be positive")]
+    public void GetNumberOfInvalidReviewsFromReviewer(int reviewer, string exceptedMessage)
     {
         // Arrange 
+        BEReview[] fakeRepo = new BEReview[]
+        {
+            new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+        };
+        
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         
         // Act
-        
+        Action action = () => service.GetNumberOfReviewsFromReviewer(reviewer);
+        var ex = Assert.Throws<ArgumentException>(action);
+
         // Assert
+        Assert.Equal(exceptedMessage, ex.Message);
+        mockRepository.Verify(r => r.GetAll(), Times.Never);
     }
 
+    [Theory]
+    [InlineData(1, 3, 3, 3)]
+    [InlineData(1, 1, 3, 2)]
+    public void GetValidAverageRateFromReviewer(int reviewer, int grade, int grade2,  double expectedResult)
+    {
+        // Arrange 
+        BEReview[] fakeRepo = new BEReview[]
+        {
+            new BEReview() { Reviewer = 1, Movie = 1, Grade = grade, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 1, Grade = grade, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 1, Movie = 2, Grade = grade2, ReviewDate = new DateTime() },
+        };
+        
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
+        // Act
+        var actual = service.GetAverageRateFromReviewer(reviewer); 
+
+        // Assert
+        Assert.Equal(actual, expectedResult);
+        mockRepository.Verify(r => r.GetAll(), Times.Once);
+    }
+    
+    [Theory]
+    [InlineData(-1, "Id must be positive")]
+    [InlineData(0, "Id must be positive")]
+    public void GetInvalidAverageRateFromReviewer(int reviewer, string expectedMessage)
+    {
+        // Arrange 
+        BEReview[] fakeRepo = new BEReview[]
+        {
+            new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+        };
+        
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
+        
+        // Act
+        Action action = () => service.GetAverageRateFromReviewer(reviewer);
+        var ex = Assert.Throws<ArgumentException>(action);
+
+        // Assert
+        Assert.Equal(expectedMessage, ex.Message);
+        mockRepository.Verify(r => r.GetAll(), Times.Never);
+    }
+    
     [Fact]
-    public void GetAverageRateFromReviewer()
+    public void GetNumberOfValidRatesByReviewer()
     {
         // Arrange 
         
@@ -69,27 +136,7 @@ public class ReviewServiceTest
     }
     
     [Fact]
-    public void GetValidAverageRateFromReviewer()
-    {
-        // Arrange 
-        
-        // Act
-        
-        // Assert
-    }
-    
-    [Fact]
-    public void GetInvalidAverageRateFromReviewer()
-    {
-        // Arrange 
-        
-        // Act
-        
-        // Assert
-    }
-    
-    [Fact]
-    public void GetNumberOfRatesByReviewer()
+    public void GetNumberOfInvalidRatesByReviewer()
     {
         // Arrange 
         

@@ -1,5 +1,4 @@
 ﻿using Application.Interface;
-using Domain;
 
 namespace Application;
 
@@ -13,14 +12,18 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfReviewsFromReviewer(int reviewer)
     {
-        var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer).Select(r => r.Reviewer);
+        if (reviewer < 1) throw new ArgumentException("Id must be positive");
+            var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer).Select(r => r.Reviewer);
 
         return reviews.Count();
     }
 
     public double GetAverageRateFromReviewer(int reviewer)
-    {
-        throw new NotImplementedException();
+    { 
+        if (reviewer < 1) throw new ArgumentException("Id must be positive");
+        var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer).Select(r => r.Grade);
+
+        return reviews.Average();
     }
 
     public int GetNumberOfRatesByReviewer(int reviewer, int rate)
