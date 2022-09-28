@@ -8,24 +8,19 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\andyl\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Krist\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\andyl\\CompulsoryReviewer\\Domain\\Domain.csproj",
+      "projectUniqueName": "C:\\Users\\Krist\\Desktop\\GitHub\\CompulsoryReviewer\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "C:\\Users\\andyl\\CompulsoryReviewer\\Domain\\Domain.csproj",
-      "packagesPath": "C:\\Users\\andyl\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\andyl\\CompulsoryReviewer\\Domain\\obj\\",
+      "projectPath": "C:\\Users\\Krist\\Desktop\\GitHub\\CompulsoryReviewer\\Domain\\Domain.csproj",
+      "packagesPath": "C:\\Users\\Krist\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Krist\\Desktop\\GitHub\\CompulsoryReviewer\\Domain\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\andyl\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Krist\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -33,7 +28,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

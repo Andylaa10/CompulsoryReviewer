@@ -28,7 +28,8 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfRatesByReviewer(int reviewer, int rate)
     {
-        if (reviewer < 1 || rate < 1) throw new ArgumentException("input must be positive");
+        if (reviewer < 1) throw new ArgumentException("ID must be positive");
+        if (rate is < 1 or > 5) throw new ArgumentException("Grade must be 1-5");
         var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer && r.Grade == rate).Select(r => r.Reviewer);
 
         return reviews.Count();
@@ -36,21 +37,24 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfReviews(int movie)
     {
-        if (movie < 1) throw new ArgumentException("Input must be positive");
+        if (movie < 1) throw new ArgumentException("ID must be positive");
             var reviews = _repository.GetAll().Where(r => r.Movie == movie).Select(r => r.Movie);
         return reviews.Count();
     }
 
     public double GetAverageRateOfMovie(int movie)
     {
-        if (movie < 1) throw new ArgumentException("Input must be positive");
+        if (movie < 1) throw new ArgumentException("ID must be positive");
         var reviews = _repository.GetAll().Where(r => r.Movie == movie).Select(r => r.Grade);
         return reviews.Average();
     }
 
     public int GetNumberOfRates(int movie, int rate)
     {
-        throw new NotImplementedException();
+        if (movie < 1) throw new ArgumentException("ID must be positive");
+        if (rate is < 1 or > 5) throw new ArgumentException("Grade must be 1-5");
+        var reviews = _repository.GetAll().Where(r => r.Movie == movie && r.Grade == rate).Select(r => r.Grade);
+        return reviews.Count();
     }
 
     public List<int> GetMoviesWithHighestNumberOfTopRates()
@@ -60,7 +64,8 @@ public class ReviewService : IReviewService
 
     public List<int> GetMostProductiveReviewers()
     {
-        throw new NotImplementedException();
+        var reviews = _repository.GetAll();
+        
     }
 
     public List<int> GetTopRatedMovies(int amount)
