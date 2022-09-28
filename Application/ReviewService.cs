@@ -28,7 +28,10 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfRatesByReviewer(int reviewer, int rate)
     {
-        throw new NotImplementedException();
+        if (reviewer < 1 || rate < 1) throw new ArgumentException("input must be positive");
+        var reviews = _repository.GetAll().Where(r => r.Reviewer == reviewer && r.Grade == rate).Select(r => r.Reviewer);
+
+        return reviews.Count();
     }
 
     public int GetNumberOfReviews(int movie)
