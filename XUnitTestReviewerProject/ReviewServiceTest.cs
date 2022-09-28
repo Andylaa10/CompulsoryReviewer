@@ -9,7 +9,7 @@ public class ReviewServiceTest
 {
     
     [Fact]
-    public void CreateReviewService()
+    public void CreateReviewServiceTest()
     {
         // Arrange 
         Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
@@ -50,9 +50,9 @@ public class ReviewServiceTest
     }
 
     [Theory]
-    [InlineData(-1, "Id must be positive")]
+    [InlineData(-1, "Id must be positive")] // Throws an argument exception if reviewer id is less than 1
     [InlineData(0, "Id must be positive")]
-    public void GetNumberOfInvalidReviewsFromReviewer(int reviewer, string exceptedMessage)
+    public void GetNumberOfInvalidReviewsFromReviewerTest(int reviewer, string exceptedMessage)
     {
         // Arrange 
         BEReview[] fakeRepo = new BEReview[]
@@ -79,7 +79,7 @@ public class ReviewServiceTest
     [InlineData(1, 3, 3, 3)]
     [InlineData(1, 1, 3, 2)]
     [InlineData(1, 4, 5, 4.5)]
-    public void GetValidAverageRateFromReviewer(int reviewer, int grade, int grade2,  double expectedResult)
+    public void GetValidAverageRateFromReviewerTest(int reviewer, int grade, int grade2,  double expectedResult)
     {
         // Arrange 
         BEReview[] fakeRepo = new BEReview[]
@@ -101,9 +101,9 @@ public class ReviewServiceTest
     }
     
     [Theory]
-    [InlineData(-1, "Id must be positive")]
+    [InlineData(-1, "Id must be positive")] // Throws an argument exception if reviewer id is less than 1
     [InlineData(0, "Id must be positive")]
-    public void GetInvalidAverageRateFromReviewer(int reviewer, string expectedMessage)
+    public void GetInvalidAverageRateFromReviewerTest(int reviewer, string expectedMessage)
     {
         // Arrange 
         BEReview[] fakeRepo = new BEReview[]
@@ -129,7 +129,7 @@ public class ReviewServiceTest
     [Theory]
     [InlineData(1,2,2)]
     [InlineData(1,1,1)]
-    public void GetNumberOfValidRatesByReviewer(int reviewer, int rate, int expectedResult)
+    public void GetNumberOfValidRatesByReviewerTest(int reviewer, int rate, int expectedResult)
     {
         // Arrange 
         BEReview[] fakeRepo = new BEReview[]
@@ -152,11 +152,11 @@ public class ReviewServiceTest
     }
     
     [Theory]
-    [InlineData(-1, 2, "input must be positive")]
-    [InlineData(0, 2, "input must be positive")]
-    [InlineData(1, -1, "input must be positive")]
-    [InlineData(1, 0, "input must be positive")]
-    public void GetNumberOfInvalidRatesByReviewer(int reviewer, int rate, string expectedMessage)
+    [InlineData(-1, 2, "input must be positive")] // Throws an argument exception if reviewer id is less than 1
+    [InlineData(0, 2, "input must be positive")] // Throws an argument exception if reviewer id is less than 1
+    [InlineData(1, -1, "input must be positive")] // Throws an argument exception if rate is less than 1
+    [InlineData(1, 0, "input must be positive")] // Throws an argument exception if rate id is less than 1
+    public void GetNumberOfInvalidRatesByReviewerTest(int reviewer, int rate, string expectedMessage)
     {
         // Arrange 
         BEReview[] fakeRepo = new BEReview[]
@@ -180,15 +180,18 @@ public class ReviewServiceTest
     }
 
     [Theory]
-    [InlineData()]
-    public void GetNumberOfReviews()
+    [InlineData(1, 2)]
+    [InlineData(3, 3)]
+    public void GetValidNumberOfReviewsTest(int movie, int expectedResult)
     {
         // Arrange
         BEReview[] fakeRepo = new BEReview[]
         {
             new BEReview() { Reviewer = 1, Movie = 1, Grade = 2, ReviewDate = new DateTime() },
             new BEReview() { Reviewer = 2, Movie = 1, Grade = 2, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 1, Movie = 2, Grade = 2, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 1, Movie = 3, Grade = 2, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 3, Movie = 3, Grade = 2, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 3, Grade = 2, ReviewDate = new DateTime() },
         };
         
         Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
@@ -199,11 +202,64 @@ public class ReviewServiceTest
         var actual = service.GetNumberOfReviews(movie); 
         
         // Assert
-        Assert.Equal(expected, actual);
+        Assert.Equal(expectedResult, actual);
+        mockRepository.Verify(r => r.GetAll(), Times.Once);
+    }
+    
+    [Theory]
+    [InlineData(-1, "Input must be positive")] // Throws an argument exception if movie id is less than 1
+    [InlineData(0, "Input must be positive")] // Throws an argument exception if movie id is less than 1
+    public void GetInvalidNumberOfReviewsTest(int movie, string expectedResult)
+    {
+        // Arrange
+        BEReview[] fakeRepo = new BEReview[]
+        {
+            new BEReview() { Reviewer = 1, Movie = movie, Grade = 2, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = movie, Grade = 2, ReviewDate = new DateTime() },
+        };
+        
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
+        
+        // Act
+        Action action = () => service.GetNumberOfReviews(movie);
+        var ex = Assert.Throws<ArgumentException>(action);
+        
+        // Assert
+        Assert.Equal(expectedResult, ex.Message);
+        mockRepository.Verify(r => r.GetAll(), Times.Never);
+    }
+
+    [Theory]
+    [InlineData(1,1.5)]
+    [InlineData(3,4)]
+    public void GetAverageRateOfMovieTest(int movie, double expectedResult)
+    {
+        // Arrange
+        BEReview[] fakeRepo = new BEReview[]
+        {
+            new BEReview() { Reviewer = 1, Movie = 1, Grade = 1, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 1, Grade = 2, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 1, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 3, Movie = 3, Grade = 4, ReviewDate = new DateTime() },
+            new BEReview() { Reviewer = 2, Movie = 3, Grade = 5, ReviewDate = new DateTime() },
+        };
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
+        
+        // Act
+        var actual = service.GetAverageRateOfMovie(movie);
+
+        // Assert
+        Assert.Equal(expectedResult, actual);
+        mockRepository.Verify(r => r.GetAll(), Times.Once);
+
     }
 
     [Fact]
-    public void GetAverageRateOfMovie()
+    public void GetNumberOfRatesTest()
     {
         // Arrange 
         
@@ -213,7 +269,7 @@ public class ReviewServiceTest
     }
 
     [Fact]
-    public void GetNumberOfRates()
+    public void GetMoviesWithHighestNumberOfTopRatesTest()
     {
         // Arrange 
         
@@ -223,7 +279,7 @@ public class ReviewServiceTest
     }
 
     [Fact]
-    public void GetMoviesWithHighestNumberOfTopRates()
+    public void GetMostProductiveReviewersTest()
     {
         // Arrange 
         
@@ -233,7 +289,7 @@ public class ReviewServiceTest
     }
 
     [Fact]
-    public void GetMostProductiveReviewers()
+    public void GetTopRatedMoviesTest()
     {
         // Arrange 
         
@@ -243,7 +299,7 @@ public class ReviewServiceTest
     }
 
     [Fact]
-    public void GetTopRatedMovies()
+    public void GetTopMoviesByReviewerTest()
     {
         // Arrange 
         
@@ -253,17 +309,7 @@ public class ReviewServiceTest
     }
 
     [Fact]
-    public void GetTopMoviesByReviewer()
-    {
-        // Arrange 
-        
-        // Act
-        
-        // Assert
-    }
-
-    [Fact]
-    public void GetReviewersByMovie()
+    public void GetReviewersByMovieTest()
     {
         // Arrange 
         

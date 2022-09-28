@@ -36,12 +36,16 @@ public class ReviewService : IReviewService
 
     public int GetNumberOfReviews(int movie)
     {
-        throw new NotImplementedException();
+        if (movie < 1) throw new ArgumentException("Input must be positive");
+            var reviews = _repository.GetAll().Where(r => r.Movie == movie).Select(r => r.Movie);
+        return reviews.Count();
     }
 
     public double GetAverageRateOfMovie(int movie)
     {
-        throw new NotImplementedException();
+        if (movie < 1) throw new ArgumentException("Input must be positive");
+        var reviews = _repository.GetAll().Where(r => r.Movie == movie).Select(r => r.Grade);
+        return reviews.Average();
     }
 
     public int GetNumberOfRates(int movie, int rate)
