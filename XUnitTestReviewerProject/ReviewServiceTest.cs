@@ -7,6 +7,42 @@ namespace XUnitTestReviewerProject;
 
 public class ReviewServiceTest
 {
+
+    static IEnumerable<Object[]> GetMostProductiveReviewers_TestCases()
+    {
+        yield return new Object[]
+        {
+            new BEReview[]
+            {
+            },
+            new List<int>()
+        };
+        // 1 Top-reviewer => list(1)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>(){1}
+        };
+        
+        // 2 Top-reviewers => list(1,2)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>(){1, 2}
+        };
+    }
     
     [Fact]
     public void CreateReviewServiceTest()
@@ -343,23 +379,11 @@ public class ReviewServiceTest
     }
 
     [Theory]
-    [InlineData(2)] // the reviewer has done 2 reviews
-    [InlineData(5)] // The reviewer has done 5 reviews
-    public void GetMostProductiveReviewersTest(int expected)
+    [MemberData(nameof(GetMostProductiveReviewers_TestCases))]
+    public void GetMostProductiveReviewersTest(BEReview[] data, List<int> expectedResult)
     {
-        // Arrange 
-        BEReview[] fakeRepo = new BEReview[]
-        {
-            new BEReview() { Reviewer = 1, Movie = 1, Grade = 2, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
-            
-            new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 2, Movie = 4, Grade = 4, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 2, Movie = 5, Grade = 5, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 2, Movie = 6, Grade = 2, ReviewDate = new DateTime() },
-            new BEReview() { Reviewer = 2, Movie = 7, Grade = 2, ReviewDate = new DateTime() }
-        };
-        
+        var fakeRepo = data;
+
         Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
         IReviewService service = new ReviewService(mockRepository.Object);
         mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
@@ -368,7 +392,7 @@ public class ReviewServiceTest
         var actual = service.GetMostProductiveReviewers();
 
         // Assert
-        Assert.Equal(actual.Count, expected);
+        Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
 
     [Fact]

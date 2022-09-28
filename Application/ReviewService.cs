@@ -65,7 +65,14 @@ public class ReviewService : IReviewService
     public List<int> GetMostProductiveReviewers()
     {
         var reviews = _repository.GetAll();
-        
+        List<int> productiveReviewers = new List<int>();
+
+        foreach (var review in reviews)
+        {
+            productiveReviewers.Add(review.Reviewer);
+        }
+
+        return productiveReviewers;
     }
 
     public List<int> GetTopRatedMovies(int amount)
