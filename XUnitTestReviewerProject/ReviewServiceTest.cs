@@ -89,8 +89,7 @@ public class ReviewServiceTest
     
 
     #endregion
-
-    //TO-DO 
+    
     #region GetTopRatedMoviesTest
     static IEnumerable<Object[]> GetTopRatedMoviesTest_TestCases()
     {
@@ -131,7 +130,6 @@ public class ReviewServiceTest
 
     #endregion
     
-    //TO-DO
     #region GetTopMoviesByReviewerTest
     static IEnumerable<Object[]> GetTopMoviesByReviewerTest_TestCases()
     {
@@ -159,8 +157,8 @@ public class ReviewServiceTest
         {
             new BEReview[]
             {
-                new BEReview() { Reviewer = 3, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 3, Movie = 2, Grade = 4, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 1, Grade = 4, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 2, Grade = 4, ReviewDate = DateTime.Now.AddMilliseconds(-1) },
                 new BEReview() { Reviewer = 3, Movie = 3, Grade = 5, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 1, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
@@ -172,7 +170,6 @@ public class ReviewServiceTest
 
     #endregion
     
-    //TO-DO
     #region GetReviewersByMovieTest
     static IEnumerable<Object[]> GetReviewersByMovieTest_TestCases()
     {
