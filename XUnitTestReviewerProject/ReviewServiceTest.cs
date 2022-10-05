@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Application;
 using Application.Interface;
 using Domain;
@@ -8,6 +9,7 @@ namespace XUnitTestReviewerProject;
 public class ReviewServiceTest
 {
 
+    #region GetMostProductiveReviewers
     static IEnumerable<Object[]> GetMostProductiveReviewers_TestCases()
     {
         yield return new Object[]
@@ -43,6 +45,175 @@ public class ReviewServiceTest
             new List<int>(){1, 2}
         };
     }
+    
+
+    #endregion
+
+    #region GetMoviesWithHighestNumberOfTopRates 
+    static IEnumerable<Object[]> GetMoviesWithHighestNumberOfTopRates_TestCases()
+    {
+        yield return new Object[]
+        {
+            new BEReview[]
+            {
+            },
+            new List<int>()
+        };
+        // 1 Most Top-Rated Movie => list(1)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 5, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 5, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 5, ReviewDate = new DateTime() }
+            },
+            new List<int>(){2}
+        };
+        
+        // Most Top-Rated Movie => list(1,2)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 5, Grade = 5, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 6, Grade = 5, ReviewDate = new DateTime() }
+            },
+            new List<int>(){5, 6}
+        };
+    }
+    
+
+    #endregion
+
+    //TO-DO 
+    #region GetTopRatedMoviesTest
+    static IEnumerable<Object[]> GetTopRatedMoviesTest_TestCases()
+    {
+        yield return new Object[]
+        {
+            new BEReview[]
+            {
+            },
+            new List<int>()
+        };
+        // 1 Top-reviewer => list(1)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() { 1 }
+        };
+
+        // 2 Top-reviewers => list(1,2)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() { 1, 2 }
+        };
+    }
+
+
+    #endregion
+    
+    //TO-DO
+    #region GetTopMoviesByReviewerTest
+    static IEnumerable<Object[]> GetTopMoviesByReviewerTest_TestCases()
+    {
+        yield return new Object[]
+        {
+            new BEReview[]
+            {
+            },
+            new List<int>()
+        };
+        // 1 Top-reviewer => list(1)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() { 1 }
+        };
+
+        // 2 Top-reviewers => list(1,2)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() { 1, 2 }
+        };
+    }
+
+
+    #endregion
+    
+    //TO-DO
+    #region GetReviewersByMovieTest
+    static IEnumerable<Object[]> GetReviewersByMovieTest_TestCases()
+    {
+        yield return new Object[]
+        {
+            new BEReview[]
+            {
+            },
+            new List<int>()
+        };
+        // Gets reviewer 2 based on movie id => list(2)
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() {1}
+        };
+
+        // Gets reviewer 1, 3, 2 based on movie id => list(1,2)
+        // Reviewer 1 is first because of highest rate
+        // Reviewer 3 is second because of rate and earlier date
+        // Reviewer 2 is third
+        yield return new object[]
+        {
+            new BEReview[]
+            {
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 3, Grade = 5, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 3, Grade = 3, ReviewDate = DateTime.Now.AddMilliseconds(-1) },
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+            },
+            new List<int>() { 1, 3, 2 }
+        };
+    }
+    #endregion
+    
     
     [Fact]
     public void CreateReviewServiceTest()
@@ -367,15 +538,22 @@ public class ReviewServiceTest
         Assert.Equal(expectedResult, ex.Message);
         mockRepository.Verify(r => r.GetAll(), Times.Never);
     }
-
-    [Fact]
-    public void GetMoviesWithHighestNumberOfTopRatesTest()
+    
+    [Theory]
+    [MemberData(nameof(GetMoviesWithHighestNumberOfTopRates_TestCases))]
+    public void GetMoviesWithHighestNumberOfTopRatesTest(BEReview[] data, List<int> expectedResult)
     {
-        // Arrange 
+        var fakeRepo = data;
+
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         
         // Act
-        
+        var actual = service.GetMoviesWithHighestNumberOfTopRates();
+
         // Assert
+        Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
 
     [Theory]
@@ -415,14 +593,21 @@ public class ReviewServiceTest
         // Assert
     }
 
-    [Fact]
-    public void GetReviewersByMovieTest()
+    [Theory]
+    [MemberData(nameof(GetReviewersByMovieTest_TestCases))]
+    public void GetReviewersByMovieTest(BEReview[] data, List<int> expectedResult)
     {
-        // Arrange 
+        var fakeRepo = data;
+
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         
         // Act
-        
+        var actual = service.GetReviewersByMovie(3);
+
         // Assert
+        Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
     
 }

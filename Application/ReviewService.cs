@@ -1,4 +1,6 @@
-﻿using Application.Interface;
+﻿using System.Collections.Immutable;
+using Application.Interface;
+using Domain;
 
 namespace Application;
 
@@ -59,20 +61,83 @@ public class ReviewService : IReviewService
 
     public List<int> GetMoviesWithHighestNumberOfTopRates()
     {
-        throw new NotImplementedException();
+        Dictionary<int, int> ids = new Dictionary<int, int>();
+        
+        foreach (var review in _repository.GetAll())
+        {
+            if (review.Grade == 5)
+            {
+                if (ids.ContainsKey(review.Movie))
+                {
+                    ids[review.Movie]++;
+                }
+                else
+                {
+                    ids.Add(review.Movie, 1);
+                }
+            }
+        }
+        
+        List<int> mostTopRates = new List<int>();
+        int highest = 0;
+
+        foreach (var review in ids)
+        {
+            int count = review.Value;
+            int id = review.Key;
+
+            if (count > highest)
+            {
+                highest = count;
+                mostTopRates.Clear();
+                mostTopRates.Add(id);
+            } 
+            else if (count == highest)
+            {
+                mostTopRates.Add(id);
+            }
+        }
+
+        return mostTopRates;
     }
 
     public List<int> GetMostProductiveReviewers()
     {
-        var reviews = _repository.GetAll();
-        List<int> productiveReviewers = new List<int>();
-
-        foreach (var review in reviews)
+        Dictionary<int, int> ids = new Dictionary<int, int>();
+        
+        foreach (var review in _repository.GetAll())
         {
-            productiveReviewers.Add(review.Reviewer);
+            if (ids.ContainsKey(review.Reviewer))
+            {
+                ids[review.Reviewer]++;
+            }
+            else
+            {
+                ids.Add(review.Reviewer, 1);
+            }
         }
 
-        return productiveReviewers;
+        List<int> mostProductive = new List<int>();
+        int highest = 0;
+
+        foreach (var review in ids)
+        {
+            int count = review.Value;
+            int id = review.Key;
+
+            if (count > highest)
+            {
+                highest = count;
+                mostProductive.Clear();
+                mostProductive.Add(id);
+            } 
+            else if (count == highest)
+            {
+                mostProductive.Add(id);
+            }
+        }
+
+        return mostProductive;
     }
 
     public List<int> GetTopRatedMovies(int amount)
@@ -87,6 +152,8 @@ public class ReviewService : IReviewService
 
     public List<int> GetReviewersByMovie(int movie)
     {
-        throw new NotImplementedException();
+        var reviewers = _repository.GetAll().Where(r => r.Movie == movie).OrderByDescending(r => r.Grade).OrderByDescending(r => r.ReviewDate)
+            .Select(r => r.Reviewer).ToList();
+        return reviewers;
     }
 }
