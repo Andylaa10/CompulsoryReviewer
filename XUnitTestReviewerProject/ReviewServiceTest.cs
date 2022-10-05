@@ -101,30 +101,30 @@ public class ReviewServiceTest
             },
             new List<int>()
         };
-        // 1 Top-reviewer => list(1)
+        // 1 Toprated-movie => list(2, 1)
         yield return new object[]
         {
             new BEReview[]
             {
-                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 2, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 4, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
             },
-            new List<int>() { 1 }
+            new List<int>() { 2, 1 }
         };
 
-        // 2 Top-reviewers => list(1,2)
+        // 3 Toprated-movies => list(3, 2, 1)
         yield return new object[]
         {
             new BEReview[]
             {
-                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 1, Grade = 1, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+                new BEReview() { Reviewer = 2, Movie = 3, Grade = 5, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 2, Grade = 4, ReviewDate = new DateTime() }
             },
-            new List<int>() { 1, 2 }
+            new List<int>() { 3, 2, 1 }
         };
     }
 
@@ -573,14 +573,23 @@ public class ReviewServiceTest
         Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
 
-    [Fact]
-    public void GetTopRatedMoviesTest()
+    [Theory]
+    [MemberData(nameof(GetTopRatedMoviesTest_TestCases))]
+    public void GetTopRatedMoviesTest(BEReview[] data, List<int> expectedresult)
     {
         // Arrange 
+        var fakeRepo = data;
+
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         
         // Act
-        
+        var actual = service.GetTopRatedMovies(3);
+
         // Assert
+        Assert.Equal(expectedresult, actual);
+        Assert.True(Enumerable.SequenceEqual(expectedresult, actual));
     }
 
     [Fact]
@@ -607,6 +616,7 @@ public class ReviewServiceTest
         var actual = service.GetReviewersByMovie(3);
 
         // Assert
+        Assert.Equal(expectedResult, actual);
         Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
     

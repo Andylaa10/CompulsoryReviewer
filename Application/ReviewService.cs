@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Security.AccessControl;
 using Application.Interface;
 using Domain;
 
@@ -142,7 +143,17 @@ public class ReviewService : IReviewService
 
     public List<int> GetTopRatedMovies(int amount)
     {
-        throw new NotImplementedException();
+
+        var movieId = new Dictionary<int, double>();
+
+        foreach (BEReview review in _repository.GetAll())
+        {
+            if(!movieId.ContainsKey(review.Movie))
+            movieId.Add(review.Movie, GetAverageRateOfMovie(review.Movie));
+        }
+
+        var topRatedMovies = movieId.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        return topRatedMovies.Keys.Take(amount).ToList();
     }
 
     public List<int> GetTopMoviesByReviewer(int reviewer)
@@ -152,7 +163,7 @@ public class ReviewService : IReviewService
 
     public List<int> GetReviewersByMovie(int movie)
     {
-        var reviewers = _repository.GetAll().Where(r => r.Movie == movie).OrderByDescending(r => r.Grade).OrderByDescending(r => r.ReviewDate)
+        var reviewers = _repository.GetAll().Where(r => r.Movie == movie).OrderByDescending(r => r.Grade).ThenByDescending(r => r.ReviewDate)
             .Select(r => r.Reviewer).ToList();
         return reviewers;
     }
