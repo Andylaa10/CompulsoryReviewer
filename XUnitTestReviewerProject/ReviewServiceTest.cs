@@ -147,9 +147,9 @@ public class ReviewServiceTest
         {
             new BEReview[]
             {
-                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
+                new BEReview() { Reviewer = 3, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 2, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() }
             },
             new List<int>() { 1 }
         };
@@ -159,13 +159,13 @@ public class ReviewServiceTest
         {
             new BEReview[]
             {
-                new BEReview() { Reviewer = 1, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 1, Movie = 2, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 2, Movie = 3, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 1, Grade = 3, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 2, Grade = 4, ReviewDate = new DateTime() },
+                new BEReview() { Reviewer = 3, Movie = 3, Grade = 5, ReviewDate = new DateTime() },
                 new BEReview() { Reviewer = 2, Movie = 4, Grade = 3, ReviewDate = new DateTime() },
-                new BEReview() { Reviewer = 3, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
+                new BEReview() { Reviewer = 1, Movie = 5, Grade = 3, ReviewDate = new DateTime() }
             },
-            new List<int>() { 1, 2 }
+            new List<int>() {3, 2, 1}
         };
     }
 
@@ -592,14 +592,22 @@ public class ReviewServiceTest
         Assert.True(Enumerable.SequenceEqual(expectedresult, actual));
     }
 
-    [Fact]
-    public void GetTopMoviesByReviewerTest()
+    [Theory]
+    [MemberData(nameof(GetTopMoviesByReviewerTest_TestCases))]
+    public void GetTopMoviesByReviewerTest(BEReview[] data, List<int> expectedResult)
     {
-        // Arrange 
+        var fakeRepo = data;
+
+        Mock<IReviewRepository> mockRepository = new Mock<IReviewRepository>();
+        IReviewService service = new ReviewService(mockRepository.Object);
+        mockRepository.Setup(r => r.GetAll()).Returns(fakeRepo);
         
         // Act
-        
+        var actual = service.GetTopMoviesByReviewer(3);
+
         // Assert
+        Assert.Equal(expectedResult, actual);
+        Assert.True(Enumerable.SequenceEqual(expectedResult, actual));
     }
 
     [Theory]

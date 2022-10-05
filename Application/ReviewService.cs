@@ -158,7 +158,9 @@ public class ReviewService : IReviewService
 
     public List<int> GetTopMoviesByReviewer(int reviewer)
     {
-        throw new NotImplementedException();
+        var topMovies = _repository.GetAll().Where(r => r.Reviewer == reviewer).OrderByDescending(r => r.Grade)
+            .ThenByDescending(r => r.ReviewDate).Select(r => r.Movie).ToList();
+        return topMovies;
     }
 
     public List<int> GetReviewersByMovie(int movie)
